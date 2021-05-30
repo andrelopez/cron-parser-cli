@@ -24,7 +24,7 @@ class Parser:
         return table
 
     def _formatted(self, _type: str, val: str):
-        res = ''
+        res = val
         if val == CHAR_ALL:
             res = self._get_all_allowed_values(_type)
         elif CHAR_STEP in val:
@@ -72,8 +72,3 @@ class Parser:
         size = MAX_COLUMNS if len(array) > MAX_COLUMNS else len(array)
 
         return " ".join([str(array[i]) for i in range(size)])
-
-
-
-
-

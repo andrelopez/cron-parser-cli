@@ -1,4 +1,3 @@
-import os
 import click
 from src.service import parser
 from src.validator import input_validator
@@ -20,4 +19,3 @@ def cli(ctx, expression):
     ctx.obj = Context(expression)
 
     click.echo(ctx.obj.parser.parse_expression())
-
