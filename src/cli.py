@@ -1,6 +1,7 @@
 import click
 from src.service import parser
 from src.validator import input_validator
+from src.config import ERROR_INVALID_ARGUMENT
 
 
 class Context:
@@ -13,7 +14,7 @@ class Context:
 @click.pass_context
 def cli(ctx, expression):
     if not input_validator.is_valid(expression):
-        click.echo('Please add a valid cron expression')
+        click.echo(ERROR_INVALID_ARGUMENT)
         return
 
     ctx.obj = Context(expression)

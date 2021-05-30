@@ -12,8 +12,7 @@ def is_valid(expression: str) -> bool:
 
     try:
         CronValidator.parse(" ".join(_input[:5]))
-    except ValueError as e:
-        print(f"Error: {str(e)}")
+    except ValueError:
         return False
 
     return True

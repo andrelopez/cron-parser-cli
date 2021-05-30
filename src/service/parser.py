@@ -9,7 +9,7 @@ class Parser:
         self.minute, self.hour, self.day, self.month,\
             self.week, self.command = self.expression.split(maxsplit=5)
 
-    def parse_expression(self) -> columnar:
+    def parse_expression(self) -> str:
         data = [
             ['minute', self._formatted(MINUTE, self.minute)],
             ['hour', self._formatted(HOUR, self.hour)],
@@ -21,7 +21,7 @@ class Parser:
 
         table = columnar(data, no_borders=True)
 
-        return table
+        return str(table)
 
     def _formatted(self, _type: str, val: str):
         res = val

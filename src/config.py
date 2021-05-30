@@ -4,7 +4,7 @@ CHAR_LIST = ','
 CHAR_RANGE = '-'
 CHAR_STEP = '*/'
 
-# Types
+# TYPES
 MINUTE = 'minute'
 HOUR = 'hour'
 DAY = 'day'
@@ -22,3 +22,6 @@ ALLOWED_VALUES = {
 
 # DEFAULTS
 MAX_COLUMNS = 14
+
+# ERROR MESSAGES
+ERROR_INVALID_ARGUMENT = 'Please add a valid cron expression'
