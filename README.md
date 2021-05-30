@@ -26,7 +26,7 @@ It will return the following:
 Create a new Python 3 environment called venv and activate it (Mac or Linux):
 
 ```buildoutcfg
-$ python3 -m venv ./interview_env
+$ python3 -m venv ./venv
 $ source ./venv/bin/activate
 $ pip install --editable .
 ```

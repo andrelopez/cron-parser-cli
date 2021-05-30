@@ -1,28 +1,22 @@
 import os
-
 import click
+from src.service import svc_parser
 
 
-class ComplexCLI(click.MultiCommand):
-    def list_commands(self, ctx):
-        commands = []
-        commands_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), "commands"))
-        for filename in os.listdir(commands_folder):
-            if filename.endswith(".py") and filename.startswith("cmd_"):
-                commands.append(filename.replace("cmd_", "").replace(".py", ""))
-
-        commands.sort()
-        return commands
-
-    def get_command(self, ctx, name):
-        try:
-            mod = __import__(f"eve.commands.cmd_{name}", None, None, ["cli"])
-        except ImportError:
-            return
-        return mod.cli
+class Context:
+    def __init__(self, expression: str):
+        self.parser = svc_parser.Parser(expression)
 
 
-@click.command(cls=ComplexCLI)
-def cli():
-    """Welcome to EVE! An all-in-one cli utility tool!"""
-    pass
+@click.command()
+@click.argument("expression", type=str, required=True)
+@click.pass_context
+def cli(ctx, expression):
+    ctx.obj = Context(expression)
+
+    if not ctx.obj.parser.is_valid():
+        click.echo('Please add a valid cron expression')
+        return
+
+    click.echo(f'The subcommand {ctx.obj.parser.expression}')
+
