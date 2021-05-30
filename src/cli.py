@@ -1,12 +1,12 @@
 import os
 import click
-from src.service import svc_parser
+from src.service import parser
 from src.validator import input_validator
 
 
 class Context:
     def __init__(self, expression: str):
-        self.parser = svc_parser.Parser(expression)
+        self.parser = parser.Parser(expression)
 
 
 @click.command()
@@ -19,5 +19,5 @@ def cli(ctx, expression):
 
     ctx.obj = Context(expression)
 
-    click.echo(f'The subcommand {ctx.obj.parser.expression}')
+    click.echo(ctx.obj.parser.parse_expression())
 

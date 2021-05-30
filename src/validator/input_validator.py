@@ -1,4 +1,4 @@
-from croniter import croniter
+from cron_validator import CronValidator
 
 
 def is_valid(expression: str) -> bool:
@@ -10,4 +10,10 @@ def is_valid(expression: str) -> bool:
     if len(input) < 6:
         return False
 
-    return croniter.is_valid(" ".join(input[:5]))
+    try:
+        CronValidator.parse(" ".join(input[:5]))
+    except ValueError as e:
+        print(f"Error: {str(e)}")
+        return False
+
+    return True
