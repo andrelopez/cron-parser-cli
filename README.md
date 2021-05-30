@@ -1,16 +1,17 @@
 # Cron Parser Cli
-The cron string will be passed to your application as a single argument.
+It will transform standard cron expressions into a human-readable cron table.
+
+## Usage
+Use the following command:
+`cron-parser CRON-EXPRESSION`
+
+The output will be formatted as a table with a maximum of 14 values
+
+For example, the following input argument:
 
 `~$ cron-parser ＂*/15 0 1,15 * 1-5 /usr/bin/find＂`
 
-The output should be formatted as a table with the field name taking the first 14 columns and
-
-the times as a space-separated list following it.
-For example, the following input argument:
-
-`*/15 0 1,15 * 1-5 /usr/bin/find`
-
-It will return the following:
+It will return the following output:
 
 |   |   |
 |---|---|
