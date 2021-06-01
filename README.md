@@ -1,11 +1,11 @@
 # Cron Parser Cli
-It will transform standard cron expressions into a human-readable cron table.
+It will transform a standard cron expressions into a human-readable cron table
 
 ## Usage
 Use the following command:
 `cron-parser CRON-EXPRESSION`
 
-The output will be formatted as a table with a maximum of 14 values
+The output will be formatted as a table with a maximum of 14 columns
 
 For example, the following input argument:
 
@@ -24,7 +24,7 @@ day of week   1 2 3 4 5
 command       /usr/bin/find
 ```
 
-## Development
+## Installation
 
 Create a new Python 3 environment called venv and activate it (Mac or Linux):
 
@@ -34,10 +34,10 @@ Create a new Python 3 environment called venv and activate it (Mac or Linux):
 ~$ (venv) pip install --editable .
 ```
 
-### Run Tests
+### Tests
 
-Tests are managed by [pytest](https://docs.pytest.org/en/6.2.x/contents.html) and tests are under `test` directory
-You can run the tests with the following command:
+Tests are managed by [pytest](https://docs.pytest.org/en/6.2.x/contents.html), the tests are under the `test` directory, 
+you can run the tests with the following command:
 
 ```bash
 ~$ (venv) pytest tests -v   
