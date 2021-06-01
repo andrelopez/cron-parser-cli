@@ -12,6 +12,9 @@ def read_requirements():
 setup(
     name='cron-parser',
     version='0.1.0',
+    author='Andre Lopez',
+    url='https://github.com/andrelopez/cron-parser-cli',
+    license='MIT',
     packages=find_packages(),
     include_package_date=True,
     install_requires=read_requirements(),
