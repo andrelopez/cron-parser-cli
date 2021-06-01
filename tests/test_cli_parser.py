@@ -2,7 +2,7 @@ import pytest
 from src import cli
 from click.testing import CliRunner
 from src.config import ERROR_INVALID_ARGUMENT
-from columnar import columnar
+from src.utils import utils
 
 
 @pytest.fixture
@@ -10,37 +10,25 @@ def runner():
     return CliRunner()
 
 
-def get_columnar(minute, hour, day, month, week, command):
-    data = [
-        ['minute', minute],
-        ['hour', hour],
-        ['day of month', day],
-        ['month', month],
-        ['day of week', week],
-        ['command', command]
-    ]
-
-    table = columnar(data, no_borders=True)
-
-    return str(table)
-
-
 @pytest.mark.parametrize(('argument', 'output'), [
     pytest.param('*/15 0 1,15 * 1-5 /usr/bin/find',
-        get_columnar('0 15 30 45', '0', '1 15', '1 2 3 4 5 6 7 8 9 10 11 12', '1 2 3 4 5', '/usr/bin/find'),
-        id='Valid with all standard cron format'),
+        utils.print_table('0 15 30 45', '0', '1 15', '1 2 3 4 5 6 7 8 9 10 11 12', '1 2 3 4 5', '/usr/bin/find'),
+        id='Valid with all special chars'),
 
     pytest.param('*/15    0 1,15 *           1-5                /usr/bin/find',
-        get_columnar('0 15 30 45', '0', '1 15', '1 2 3 4 5 6 7 8 9 10 11 12', '1 2 3 4 5', '/usr/bin/find'),
+        utils.print_table('0 15 30 45', '0', '1 15', '1 2 3 4 5 6 7 8 9 10 11 12', '1 2 3 4 5', '/usr/bin/find'),
         id='Valid with all standard cron format with spaces'),
 
     pytest.param('* * * * * /jarvis/do/this',
-        get_columnar('0 1 2 3 4 5 6 7 8 9 10 11 12 13', '0 1 2 3 4 5 6 7 8 9 10 11 12 13',
+        utils.print_table('0 1 2 3 4 5 6 7 8 9 10 11 12 13', '0 1 2 3 4 5 6 7 8 9 10 11 12 13',
             '1 2 3 4 5 6 7 8 9 10 11 12 13 14', '1 2 3 4 5 6 7 8 9 10 11 12', '0 1 2 3 4 5 6', '/jarvis/do/this'),
         id='All *'),
 
-    pytest.param('0 0 1 1 0 /jarvis/do/this', get_columnar('0', '0', '1', '1', '0',
+    pytest.param('0 0 1 1 0 /jarvis/do/this', utils.print_table('0', '0', '1', '1', '0',
         '/jarvis/do/this'), id='Specific values'),
+
+    pytest.param('0 0 1 1 0 ./run-script.py && ./something-else.py', utils.print_table('0', '0', '1', '1', '0',
+        './run-script.py && ./something-else.py'), id='Command with spaces'),
 
 ])
 def test_returns_cron_parsed(runner, argument, output):
@@ -52,6 +40,7 @@ def test_returns_cron_parsed(runner, argument, output):
 @pytest.mark.parametrize(('argument', 'output'), [
     pytest.param('*/15 0 1,15 * 1- /usr/bin/find', ERROR_INVALID_ARGUMENT, id='Wrong range'),
     pytest.param('* * * * *', ERROR_INVALID_ARGUMENT, id='Missing command'),
+    pytest.param('* * * * *   ', ERROR_INVALID_ARGUMENT, id='Missing command 2'),
     pytest.param('*/ * * * * /usr/bin/find', ERROR_INVALID_ARGUMENT, id='Wrong step'),
     pytest.param('*/150 * * * * /usr/bin/find', ERROR_INVALID_ARGUMENT, id='Step out of range'),
     pytest.param('*/5 * * * 1,7 /usr/bin/find', ERROR_INVALID_ARGUMENT, id='List out of range'),
@@ -63,7 +52,8 @@ def test_returns_cron_parsed(runner, argument, output):
     pytest.param('* 24 * * * /usr/bin/find', ERROR_INVALID_ARGUMENT, id='Hour out of range'),
     pytest.param('* * 32 * * /usr/bin/find', ERROR_INVALID_ARGUMENT, id='Day out of range'),
     pytest.param('* * * 13 * /usr/bin/find', ERROR_INVALID_ARGUMENT, id='Month out of range'),
-    pytest.param('* * * * 7 /usr/bin/find', ERROR_INVALID_ARGUMENT, id='Week out of range')
+    pytest.param('* * * * 7 /usr/bin/find', ERROR_INVALID_ARGUMENT, id='Week out of range'),
+    pytest.param('*1 * * * * /usr/bin/find', ERROR_INVALID_ARGUMENT, id='Invalid star')
 ])
 def test_returns_invalid_cron_arguments(runner, argument, output):
     result = runner.invoke(cli.cli, [argument])
