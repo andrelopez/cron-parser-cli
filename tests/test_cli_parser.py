@@ -38,7 +38,6 @@ def runner():
 def test_returns_cron_parsed(runner, argument, output):
     result = runner.invoke(cli.cli, [argument])
     assert result.exit_code == 0
-    print(result.output.replace('\n', '').replace('\r', ''))
     assert result.output.strip() == output.strip()
 
 
