@@ -12,29 +12,34 @@ def runner():
 
 @pytest.mark.parametrize(('argument', 'output'), [
     pytest.param('*/15 0 1,15 * 1-5 /usr/bin/find',
-        utils.print_table('0 15 30 45', '0', '1 15', '1 2 3 4 5 6 7 8 9 10 11 12', '1 2 3 4 5', '/usr/bin/find'),
-        id='Valid with all special chars'),
+                 utils.print_table('0 15 30 45', '0', '1 15', '1 2 3 4 5 6 7 8 9 10 11 12', '1 2 3 4 5',
+                                   '/usr/bin/find'),
+                 id='Valid with all special chars'),
 
     pytest.param('*/15    0 1,15 *           1-5                /usr/bin/find',
-        utils.print_table('0 15 30 45', '0', '1 15', '1 2 3 4 5 6 7 8 9 10 11 12', '1 2 3 4 5', '/usr/bin/find'),
-        id='Valid with all standard cron format with spaces'),
+                 utils.print_table('0 15 30 45', '0', '1 15', '1 2 3 4 5 6 7 8 9 10 11 12', '1 2 3 4 5',
+                                   '/usr/bin/find'),
+                 id='Valid with all standard cron format with spaces'),
 
     pytest.param('* * * * * /jarvis/do/this',
-        utils.print_table('0 1 2 3 4 5 6 7 8 9 10 11 12 13', '0 1 2 3 4 5 6 7 8 9 10 11 12 13',
-            '1 2 3 4 5 6 7 8 9 10 11 12 13 14', '1 2 3 4 5 6 7 8 9 10 11 12', '0 1 2 3 4 5 6', '/jarvis/do/this'),
-        id='All *'),
+                 utils.print_table('0 1 2 3 4 5 6 7 8 9 10 11 12 13', '0 1 2 3 4 5 6 7 8 9 10 11 12 13',
+                                   '1 2 3 4 5 6 7 8 9 10 11 12 13 14', '1 2 3 4 5 6 7 8 9 10 11 12', '0 1 2 3 4 5 6',
+                                   '/jarvis/do/this'),
+                 id='All *'),
 
     pytest.param('0 0 1 1 0 /jarvis/do/this', utils.print_table('0', '0', '1', '1', '0',
-        '/jarvis/do/this'), id='Specific values'),
+                                                                '/jarvis/do/this'), id='Specific values'),
 
-    pytest.param('0 0 1 1 0 ./run-script.py && ./something-else.py', utils.print_table('0', '0', '1', '1', '0',
-        './run-script.py && ./something-else.py'), id='Command with spaces'),
+    pytest.param('0 0 1 1 0 ./first.py && ./second.py', utils.print_table('0', '0', '1', '1', '0',
+                                                                          './first.py && ./second.py'),
+                 id='Command with spaces'),
 
 ])
 def test_returns_cron_parsed(runner, argument, output):
     result = runner.invoke(cli.cli, [argument])
     assert result.exit_code == 0
-    assert ' '.join(result.output.split()) == ' '.join(output.split())
+    print(result.output.replace('\n', '').replace('\r', ''))
+    assert result.output.strip() == output.strip()
 
 
 @pytest.mark.parametrize(('argument', 'output'), [
@@ -53,9 +58,10 @@ def test_returns_cron_parsed(runner, argument, output):
     pytest.param('* * 32 * * /usr/bin/find', ERROR_INVALID_ARGUMENT, id='Day out of range'),
     pytest.param('* * * 13 * /usr/bin/find', ERROR_INVALID_ARGUMENT, id='Month out of range'),
     pytest.param('* * * * 7 /usr/bin/find', ERROR_INVALID_ARGUMENT, id='Week out of range'),
-    pytest.param('*1 * * * * /usr/bin/find', ERROR_INVALID_ARGUMENT, id='Invalid star')
+    pytest.param('*1 * * * * /usr/bin/find', ERROR_INVALID_ARGUMENT, id='Invalid star'),
+    pytest.param('** * * * * /usr/bin/find', ERROR_INVALID_ARGUMENT, id='Double star')
 ])
 def test_returns_invalid_cron_arguments(runner, argument, output):
     result = runner.invoke(cli.cli, [argument])
     assert result.exit_code == 0
-    assert result.output.strip() == output
+    assert result.output.strip() == output.strip()
