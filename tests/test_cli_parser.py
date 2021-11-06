@@ -34,6 +34,10 @@ def runner():
                                                                           './first.py && ./second.py'),
                  id='Command with spaces'),
 
+    pytest.param('59-2 0 1 1 0 ./command', utils.print_table('59 0 1 2', '0', '1', '1', '0',
+                                                                          './command'),
+                 id='Range in reverse'),
+
 ])
 def test_returns_cron_parsed(runner, argument, output):
     result = runner.invoke(cli.cli, [argument])

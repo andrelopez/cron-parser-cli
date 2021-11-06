@@ -13,9 +13,9 @@ class Context:
 @click.argument("expression", type=str, required=True)
 @click.pass_context
 def cli(ctx, expression):
-    if not input_validator.is_valid(expression):
-        click.secho(ERROR_INVALID_ARGUMENT, fg='red')
-        return
+    # if not input_validator.is_valid(expression):
+    #     click.secho(ERROR_INVALID_ARGUMENT, fg='red')
+    #     return
 
     ctx.obj = Context(expression)
 
